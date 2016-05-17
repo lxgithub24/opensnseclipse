@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>Admin/Expression/delExpression?name=<?php echo ($filename); ?>&pkg=miniblog
