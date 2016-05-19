@@ -330,6 +330,49 @@ var do_comment = function () {
     })
 }
 
+var do_comment1 = function () {
+    $('[data-role="do_comment"]').unbind('click');
+    $('[data-role="do_comment"]').click(function () {
+
+        var weiboId = $(this).attr('data-weibo-id');
+
+
+        var weibo = $('#weibo_' + weiboId);
+        var content = $('.weibo-comment-content', weibo).val();
+        var url = U('Weibo/Index/doComment1');
+        var commitButton = $(this);
+        var weiboCommentList = $('.weibo-comment-list', weibo);
+        var originalButtonText = commitButton.text();
+        commitButton.text('正在发表...').addClass('disabled');
+        var weiboToCommentId = $('[name="reply_id"]', weibo);
+        var comment_id = weiboToCommentId.val();
+        $.post(url, {weibo_id: weiboId, content: content, comment_id: comment_id}, function (a) {
+            handleAjax(a);
+            if (a.status) {
+
+                if (weibo_comment_order == 1) {
+                    var comment_list = $('#show_comment_' + weiboId)
+                    comment_list.attr('data-comment-count', parseInt(comment_list.attr('data-comment-count')) + 1)
+                    var count = comment_list.attr('data-comment-count');
+                    weibo_page(weiboId, Math.ceil(count / 10));
+                } else {
+                    $('#show_comment_' + weiboId).prepend(a.html);
+                }
+                commitButton.text(originalButtonText);
+                commitButton.removeClass('disabled');
+                $('.weibo-comment-content', weibo).val('');
+                $('.XT_face').remove();
+                weibo_bind();
+            } else {
+                commitButton.text(originalButtonText);
+                commitButton.removeClass('disabled');
+            }
+        });
+
+    })
+}
+
+
 var weibo_page = function (weibo_id, page) {
     $.post(U('Weibo/Index/commentlist'), {weibo_id: weibo_id, page: page}, function (res) {
         $('#show_comment_' + weibo_id).html(res);
@@ -503,6 +546,7 @@ var weibo_bind = function(){
     weibo_reply();
     weibo_comment();
     do_comment();
+    do_comment1();
     bind_support();
     comment_del();
     del_weibo();

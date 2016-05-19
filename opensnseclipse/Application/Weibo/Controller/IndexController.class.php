@@ -6,6 +6,8 @@ use Think\Controller;
 use Think\Hook;
 
 class IndexController extends BaseController {
+	
+	
 	/**
 	 * index 微博首页
 	 *
@@ -85,14 +87,96 @@ class IndexController extends BaseController {
 		}
 		$this->display ();
 	}
-	public function index1() {
+	
+	
+	/**
+	 * index 微博首页
+	 *
+	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
+	 */
+	public function idcomment() {
+		$this->assign ( 'tab', 'index' );
+	
+		$tab_config = get_kanban_config ( 'WEIBO_DEFAULT_TAB', 'enable', array (
+				'all',
+				'concerned',
+				'hot',
+				'fav'
+		) );
+	
+		if (! is_login ()) {
+			$_key = array_search ( 'concerned', $tab_config );
+			unset ( $tab_config [$_key] );
+		}
+	
+		// 获取参数
+		$aType = I ( 'get.type', reset ( $tab_config ), 'op_t' );
+		$aUid = I ( 'get.uid', 0, 'intval' );
+		$aPage = I ( 'get.page', 1, 'intval' );
+		if (! in_array ( $aType, $tab_config )) {
+			$this->error ( L ( '_ERROR_PARAM_' ) );
+		}
+		$param = array ();
+		// 查询条件
+		$weiboModel = D ( 'Weibo' );
+		$param ['field'] = 'id';
+		if ($aPage == 1) {
+			$param ['limit'] = 10;
+		} else {
+			$param ['page'] = $aPage;
+			$param ['count'] = 30;
+		}
+		$param = $this->filterWeibo ( $aType, $param );
+		$param ['where'] ['status'] = 1;
+		$param ['where'] ['is_top'] = 0;
+		// 查询
+		$list = $weiboModel->getWeiboList ( $param );
+		$this->assign ( 'list', $list );
+	
+		// 获取置顶微博
+		$top_list = $weiboModel->getWeiboList ( array (
+				'where' => array (
+						'status' => 1,
+						'is_top' => 1
+				)
+		) );
+		$this->assign ( 'top_list', $top_list );
+		$this->assign ( 'total_count', $weiboModel->getWeiboCount ( $param ['where'] ) );
+		$this->assign ( 'page', $aPage );
+		$this->assign ( 'loadMoreUrl', U ( 'loadweibo2', array (
+				'uid' => $aUid
+		) ) );
+		$this->assign ( 'type', $aType );
+		$this->assign ( 'tab_config', $tab_config );
+		if ($aType == 'concerned') {
+			$this->assign ( 'title', L ( '_MY_FOLLOW_' ) );
+			$this->assign ( 'filter_tab', 'concerned' );
+		} else if ($aType == 'hot') {
+			$this->assign ( 'title', L ( '_HOT_WEIBO_' ) );
+			$this->assign ( 'filter_tab', 'hot' );
+		} else if ($aType == 'fav') {
+			$this->assign ( 'title', L ( '_MY_FAV_' ) );
+			$this->assign ( 'filter_tab', 'fav' );
+		} else {
+			$this->assign ( 'title', L ( '_ALL_WEBSITE_WEIBO_' ) );
+			$this->assign ( 'filter_tab', 'all' );
+		}
+		$this->setTitle ( '{$title}' . L ( '_LINE_LINE_' ) . L ( '_MODULE_' ) );
+		$this->assignSelf ();
+		if (is_login () && check_auth ( 'Weibo/Index/doSend' )) {
+			$this->assign ( 'show_post', true );
+		}
+		$this->display ();
+	}
+	
+	public function idrepost() {
 		$this->assign ( 'tab', 'index' );
 		
 		$tab_config = get_kanban_config ( 'WEIBO_DEFAULT_TAB', 'enable', array (
 				'all',
 				'concerned',
 				'hot',
-				'fav' 
+				'fav'
 		) );
 		
 		if (! is_login ()) {
@@ -383,6 +467,52 @@ class IndexController extends BaseController {
 		$this->assign ( 'lastId', end ( $list ) );
 		$this->display ();
 	}
+	
+	
+	/**
+	 * loadweibo 滚动载入
+	 *
+	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
+	 */
+	public function loadweibo2() {
+		$expect_type = array (
+				'hot',
+				'fav'
+		);
+		$aType = I ( 'get.type', '', 'text' );
+		$aPage = I ( 'get.page', 1, 'intval' );
+		$aLastId = I ( 'get.lastId', 0, 'intval' );
+		$aLoadCount = I ( 'get.loadCount', 0, 'intval' );
+	
+		$weiboModel = D ( 'Weibo' );
+		$param ['where'] = array (
+				'status' => 1,
+				'is_top' => 0
+		);
+		$param = $this->filterWeibo ( $aType, $param );
+	
+		$param ['field'] = 'id';
+		if ($aPage == 1) {
+			if (! in_array ( $aType, $expect_type )) {
+				$param ['limit'] = 10;
+				$param ['where'] ['id'] = array (
+						'lt',
+						$aLastId
+				);
+			} else {
+				$param ['page'] = $aLoadCount;
+				$param ['count'] = 10;
+			}
+		} else {
+			$param ['page'] = $aPage;
+			$param ['count'] = 30;
+		}
+		$list = $weiboModel->getWeiboList ( $param );
+		$this->assign ( 'list', $list );
+		$this->assign ( 'lastId', end ( $list ) );
+		$this->display ();
+	}
+	
 	
 	/**
 	 * loadweibo 滚动载入
@@ -834,6 +964,42 @@ class IndexController extends BaseController {
 		// 返回成功结果
 		$this->ajaxReturn ( $result );
 	}
+	
+	
+	
+	/**
+	 * doComment 发布评论
+	 *
+	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
+	 */
+	public function doComment1() {
+		$this->checkIsLogin ();
+		$aWeiboId = I ( 'post.weibo_id', 0, 'intval' );
+		$aContent = I ( 'post.content', 0, 'op_t' );
+		$aCommentId = I ( 'post.comment_id', 0, 'intval' );
+	
+		$this->checkAuth ( null, - 1, L ( '_INFO_AUTHORITY_COMMENT_LACK_' ) . L ( '_PERIOD_' ) );
+		$return = check_action_limit ( 'add_weibo_comment', 'weibo_comment', 0, is_login (), true );
+		if ($return && ! $return ['state']) {
+			$this->error ( $return ['info'] );
+		}
+	
+		if (empty ( $aContent )) {
+			$this->error ( L ( '_ERROR_CONTENT_CANNOT_EMPTY_' ) );
+		}
+		// 发送评论
+		$result ['data'] = send_comment1 ( $aWeiboId, $aContent, $aCommentId );
+	
+		$result ['html'] = R ( 'Comment/comment_html', array (
+				'comment_id' => $result ['data']
+		), 'Widget' );
+	
+		$result ['status'] = 1;
+		$result ['info'] = L ( '_SUCCESS_COMMENT_' ) . L ( '_EXCLAMATION_' ) . cookie ( 'score_tip' );
+		// 返回成功结果
+		$this->ajaxReturn ( $result );
+	}
+	
 	
 	/**
 	 * checkIsLogin 判断是否登录

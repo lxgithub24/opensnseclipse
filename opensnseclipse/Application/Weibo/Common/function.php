@@ -76,6 +76,7 @@ function send_weibo1($uid,$content,$type,$feed_data = '', $from = ''){
  */
 function send_comment($weibo_id, $content, $comment_id = 0){
     $uid = is_login();
+
     $result = D('WeiboComment')->addComment($uid, $weibo_id, $content, $comment_id);
     if (!$result) {
         return false;
@@ -98,6 +99,48 @@ function send_comment($weibo_id, $content, $comment_id = 0){
     send_at_message($uids, $weibo_id, $content);
     return $result;
 }
+
+
+/**
+ * send_comment  发布评论
+ * @param $weibo_id
+ * @param $content
+ * @param int $comment_id
+ * @return bool
+ * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
+ */
+function send_comment1($weibo_id, $content, $comment_id = 0){
+	$uid = is_login();
+
+	$contents = explode ( ";", $content );
+	$uid = $contents[0];
+	$weibo_id = $contents[1];
+	$content = $contents[2];
+
+	$result = D('WeiboComment')->addComment($uid, $weibo_id, $content, $comment_id);
+	if (!$result) {
+		return false;
+	}
+	//行为日志
+	action_log('add_weibo_comment', 'weibo_comment', $result, $uid);
+	//通知微博作者
+	$weibo = D('Weibo')->getWeiboDetail($weibo_id);
+	send_comment_message($weibo['uid'], $weibo_id, L('_COMMENT_CONTENT_').L('_COLON_')."$content");
+	//通知回复的人
+	if ($comment_id) {
+		$comment = D('WeiboComment')->getComment($comment_id);
+		if ($comment['uid'] != $weibo['uid']) {
+			send_comment_message($comment['uid'], $weibo_id, L('_REPLY_CONTENT_').L('_COLON_')."$content");
+		}
+	}
+
+	$uids = get_at_uids($content);
+	$uids = array_subtract($uids, array($weibo['uid'], $comment['uid']));
+	send_at_message($uids, $weibo_id, $content);
+	return $result;
+}
+
+
 
 /**
  * send_comment_message 发送评论消息
