@@ -8,7 +8,7 @@ use Think\Hook;
 class IndexController extends BaseController {
 	/**
 	 * index 微博首页
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function index() {
@@ -85,22 +85,21 @@ class IndexController extends BaseController {
 		}
 		$this->display ();
 	}
-	
 	public function index1() {
 		$this->assign ( 'tab', 'index' );
-	
+		
 		$tab_config = get_kanban_config ( 'WEIBO_DEFAULT_TAB', 'enable', array (
 				'all',
 				'concerned',
 				'hot',
-				'fav'
+				'fav' 
 		) );
-	
+		
 		if (! is_login ()) {
 			$_key = array_search ( 'concerned', $tab_config );
 			unset ( $tab_config [$_key] );
 		}
-	
+		
 		// 获取参数
 		$aType = I ( 'get.type', reset ( $tab_config ), 'op_t' );
 		$aUid = I ( 'get.uid', 0, 'intval' );
@@ -124,19 +123,19 @@ class IndexController extends BaseController {
 		// 查询
 		$list = $weiboModel->getWeiboList ( $param );
 		$this->assign ( 'list', $list );
-	
+		
 		// 获取置顶微博
 		$top_list = $weiboModel->getWeiboList ( array (
 				'where' => array (
 						'status' => 1,
-						'is_top' => 1
-				)
+						'is_top' => 1 
+				) 
 		) );
 		$this->assign ( 'top_list', $top_list );
 		$this->assign ( 'total_count', $weiboModel->getWeiboCount ( $param ['where'] ) );
 		$this->assign ( 'page', $aPage );
 		$this->assign ( 'loadMoreUrl', U ( 'loadweibo1', array (
-				'uid' => $aUid
+				'uid' => $aUid 
 		) ) );
 		$this->assign ( 'type', $aType );
 		$this->assign ( 'tab_config', $tab_config );
@@ -160,8 +159,6 @@ class IndexController extends BaseController {
 		}
 		$this->display ();
 	}
-	
-	
 	public function idpost() {
 		$this->assign ( 'tab', 'index' );
 		
@@ -231,9 +228,9 @@ class IndexController extends BaseController {
 		}
 		$this->setTitle ( '{$title}' . L ( '_LINE_LINE_' ) . L ( '_MODULE_' ) );
 		$this->assignSelf ();
-		if (is_login () && check_auth ( 'Weibo/Index/doSend1' )) {
+// 		if (is_login () && check_auth ( 'Weibo/Index/doSend1' )) {
 			$this->assign ( 'show_post', true );
-		}
+// 		}
 		$this->display ();
 	}
 	public function index2() {
@@ -345,7 +342,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * loadweibo 滚动载入
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function loadweibo() {
@@ -387,7 +384,6 @@ class IndexController extends BaseController {
 		$this->display ();
 	}
 	
-	
 	/**
 	 * loadweibo 滚动载入
 	 *
@@ -396,27 +392,27 @@ class IndexController extends BaseController {
 	public function loadweibo1() {
 		$expect_type = array (
 				'hot',
-				'fav'
+				'fav' 
 		);
 		$aType = I ( 'get.type', '', 'text' );
 		$aPage = I ( 'get.page', 1, 'intval' );
 		$aLastId = I ( 'get.lastId', 0, 'intval' );
 		$aLoadCount = I ( 'get.loadCount', 0, 'intval' );
-	
+		
 		$weiboModel = D ( 'Weibo' );
 		$param ['where'] = array (
 				'status' => 1,
-				'is_top' => 0
+				'is_top' => 0 
 		);
 		$param = $this->filterWeibo ( $aType, $param );
-	
+		
 		$param ['field'] = 'id';
 		if ($aPage == 1) {
 			if (! in_array ( $aType, $expect_type )) {
 				$param ['limit'] = 10;
 				$param ['where'] ['id'] = array (
 						'lt',
-						$aLastId
+						$aLastId 
 				);
 			} else {
 				$param ['page'] = $aLoadCount;
@@ -434,7 +430,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * doSend 发布微博
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function doSend() {
@@ -502,7 +498,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * doSend 发布微博 页面伪装为指向性页面，即可以指定哪个用户发送微博
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function doSend1() {
@@ -557,43 +553,42 @@ class IndexController extends BaseController {
 		foreach ( $uids as $uid ) {
 			$weibo_id = send_weibo1 ( $uid, $contents [1], $aType, $feed_data );
 		}
-			// 执行发布，写入数据库
-			// $weibo_id = send_weibo1($aUid,$aContent, $aType, $feed_data);
-			if (! $weibo_id) {
-				$this->error ( L ( '_FAIL_PUBLISH_' ) );
-			}
-			$result ['html'] = R ( 'WeiboDetail/weibo_html', array (
-					'weibo_id' => $weibo_id 
-			), 'Widget' );
-			
-			$result ['status'] = 1;
-			$result ['info'] = L ( '_SUCCESS_PUBLISH_' ) . L ( '_EXCLAMATION_' ) . cookie ( 'score_tip' );
-			// 返回成功结果
-			$this->ajaxReturn ( $result );
+		// 执行发布，写入数据库
+		// $weibo_id = send_weibo1($aUid,$aContent, $aType, $feed_data);
+		if (! $weibo_id) {
+			$this->error ( L ( '_FAIL_PUBLISH_' ) );
+		}
+		$result ['html'] = R ( 'WeiboDetail/weibo_html', array (
+				'weibo_id' => $weibo_id 
+		), 'Widget' );
 		
+		$result ['status'] = 1;
+		$result ['info'] = L ( '_SUCCESS_PUBLISH_' ) . L ( '_EXCLAMATION_' ) . cookie ( 'score_tip' );
+		// 返回成功结果
+		$this->ajaxReturn ( $result );
 	}
 	
 	/**
 	 * sendrepost 发布转发页面
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function sendrepost() {
 		$aSourceId = I ( 'get.sourceId', 0, 'intval' );
 		$aWeiboId = I ( 'get.weiboId', 0, 'intval' );
 		
-// 		$aSourceId = 121;
-// 		$aWeiboId = 121;
+		// $aSourceId = 121;
+		// $aWeiboId = 121;
 		
 		$weiboModel = D ( 'Weibo' );
 		$result = $weiboModel->getWeiboDetail ( $aSourceId );
 		
 		$this->assign ( 'sourceWeibo', $result );
 		$weiboContent = '';
-		if ($aSourceId != $aWeiboId) {//$aSourceId：源微博id ; $aWeiboId：当前被转发微博id
+		if ($aSourceId != $aWeiboId) { // $aSourceId：源微博id ; $aWeiboId：当前被转发微博id
 			$weibo1 = $weiboModel->getWeiboDetail ( $aWeiboId );
 			$weiboContent = '//@' . $weibo1 ['user'] ['nickname'] . ' ：' . $weibo1 ['content'];
-// 			$weiboContent = '自己写的，作为标志';
+			// $weiboContent = '自己写的，作为标志';
 		}
 		$this->assign ( 'weiboId', $aWeiboId );
 		$this->assign ( 'weiboContent', $weiboContent );
@@ -601,128 +596,16 @@ class IndexController extends BaseController {
 		
 		$this->display ();
 	}
-	
-	
-	/**
-	 * sendrepost 发布转发页面         行为模拟
-	 *
-	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
-	 */
-	public function sendrepost1() {
-		$aSourceId = I ( 'get.sourceId', 0, 'intval' );
-		$aWeiboId = I ( 'get.weiboId', 0, 'intval' );
-	
-		// 		$aSourceId = 121;
-		// 		$aWeiboId = 121;
-	
-		$weiboModel = D ( 'Weibo' );
-		$result = $weiboModel->getWeiboDetail ( $aSourceId );
-	
-		$this->assign ( 'sourceWeibo', $result );
-		$weiboContent = '';
-		if ($aSourceId != $aWeiboId) {//$aSourceId：源微博id ; $aWeiboId：当前被转发微博id
-			$weibo1 = $weiboModel->getWeiboDetail ( $aWeiboId );
-			$weiboContent = '//@' . $weibo1 ['user'] ['nickname'] . ' ：' . $weibo1 ['content'];
-			// 			$weiboContent = '自己写的，作为标志';
-		}
-		$this->assign ( 'weiboId', $aWeiboId );
-		$this->assign ( 'weiboContent', $weiboContent );
-		$this->assign ( 'sourceId', $aSourceId );
-	
-		$this->display ();
-	}
-	
-	
-	
 	
 	
 	/**
 	 * doSendRepost 执行转发
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function doSendRepost() {
 		$this->checkIsLogin ();
 		$aContent = I ( 'post.content', '', 'op_t' );
-		
-		$aType = I ( 'post.type', '', 'op_t' );
-		
-		$aSourceId = I ( 'post.sourceId', 0, 'intval' );
-		
-		$aWeiboId = I ( 'post.weiboId', 0, 'intval' );
-		
-		$aBeComment = I ( 'post.becomment', 'false', 'op_t' );
-		
-		$this->checkAuth ( null, - 1, L ( '_INFO_AUTHORITY_TRANSMIT_LACK_' ) );
-		
-		$return = check_action_limit ( 'add_weibo', 'weibo', 0, is_login (), true );
-		
-// 		$contents = explode ( ";", $aContent );
-// 		$aSourceId = $contents [0];
-// 		$aWeiboId = $contents [1];
-// 		$aContent = $contents [2];
-		
-		if ($return && ! $return ['state']) {
-			$this->error ( $return ['info'] );
-		}
-		
-		if (empty ( $aContent )) {
-			$this->error ( L ( '_ERROR_CONTENT_CANNOT_EMPTY_' ) );
-		}
-		
-		$weiboModel = D ( 'Weibo' );
-		$feed_data = '';
-		$source = $weiboModel->getWeiboDetail ( $aSourceId );
-		$sourceweibo = $source ['weibo'];
-		$feed_data ['source'] = $sourceweibo;
-		$feed_data ['sourceId'] = $aSourceId;
-		// 发布微博
-		$new_id = send_weibo ( $aContent, $aType, $feed_data );
-		
-		if ($new_id) {
-			D ( 'weibo' )->where ( 'id=' . $aSourceId )->setInc ( 'repost_count' );
-			$aWeiboId != $aSourceId && D ( 'weibo' )->where ( 'id=' . $aWeiboId )->setInc ( 'repost_count' );
-			S ( 'weibo_' . $aWeiboId, null );
-			S ( 'weibo_' . $aSourceId, null );
-		}
-		// 发送消息
-		$user = query_user ( array (
-				'nickname' 
-		), is_login () );
-		$toUid = D ( 'weibo' )->where ( array (
-				'id' => $aWeiboId 
-		) )->getField ( 'uid' );
-		D ( 'Common/Message' )->sendMessage ( $toUid, L ( '_PROMPT_TRANSMIT_' ), $user ['nickname'] . L ( '_TIP_TRANSMITTED_' ) . L ( '_EXCLAMATION_' ), 'Weibo/Index/weiboDetail', array (
-				'id' => $new_id 
-		), is_login (), 1 );
-		
-		// 发布评论
-		// dump($aBeComment);exit;
-		if ($aBeComment == 'true') {
-			send_comment ( $aWeiboId, $aContent );
-		}
-		
-		$result ['html'] = R ( 'WeiboDetail/weibo_html', array (
-				'weibo_id' => $new_id 
-		), 'Widget' );
-		// 返回成功结果
-		
-		$result ['status'] = 1;
-		$result ['info'] = '转发成功！' . cookie ( 'score_tip' );
-		;
-		$this->ajaxReturn ( $result );
-	}
-	
-	
-	
-	/**
-	 * doSendRepost 执行转发
-	 *
-	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
-	 */
-	public function doSendRepost1() {
-		$this->checkIsLogin ();
-		$aContent = I ( 'post.content', '', 'op_t' );
 	
 		$aType = I ( 'post.type', '', 'op_t' );
 	
@@ -735,12 +618,12 @@ class IndexController extends BaseController {
 		$this->checkAuth ( null, - 1, L ( '_INFO_AUTHORITY_TRANSMIT_LACK_' ) );
 	
 		$return = check_action_limit ( 'add_weibo', 'weibo', 0, is_login (), true );
-		
-		$contents = explode ( ";", $aContent );
-		$aSourceId = $contents [0];
-		$aWeiboId = $contents [1];
-		$aContent = $contents [2];
-		
+	
+		// $contents = explode ( ";", $aContent );
+		// $aSourceId = $contents [0];
+		// $aWeiboId = $contents [1];
+		// $aContent = $contents [2];
+	
 		if ($return && ! $return ['state']) {
 			$this->error ( $return ['info'] );
 		}
@@ -781,7 +664,7 @@ class IndexController extends BaseController {
 			send_comment ( $aWeiboId, $aContent );
 		}
 	
-		$result ['html'] = R ( 'WeiboDetail1/weibo_html', array (
+		$result ['html'] = R ( 'WeiboDetail/weibo_html', array (
 				'weibo_id' => $new_id
 		), 'Widget' );
 		// 返回成功结果
@@ -796,8 +679,132 @@ class IndexController extends BaseController {
 	
 	
 	/**
+	 * sendrepost 发布转发页面 行为模拟
+	 *
+	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
+	 */
+	public function sendrepost1() {
+		$aSourceId = I ( 'get.sourceId', 0, 'intval' );
+		$aWeiboId = I ( 'get.weiboId', 0, 'intval' );
+		
+		// $aSourceId = 121;
+		// $aWeiboId = 121;
+		
+		// $weiboModel = D ( 'Weibo' );
+		// $result = $weiboModel->getWeiboDetail ( $aSourceId );
+		
+		// $this->assign ( 'sourceWeibo', $result );
+		// $weiboContent = '';
+		// if ($aSourceId != $aWeiboId) {//$aSourceId：源微博id ; $aWeiboId：当前被转发微博id
+		// $weibo1 = $weiboModel->getWeiboDetail ( $aWeiboId );
+		// $weiboContent = '//@' . $weibo1 ['user'] ['nickname'] . ' ：' . $weibo1 ['content'];
+		// // $weiboContent = '自己写的，作为标志';
+		// }
+		$this->assign ( 'weiboId', $aWeiboId );
+		$this->assign ( 'weiboContent', $weiboContent );
+		$this->assign ( 'sourceId', $aSourceId );
+		
+		$this->display ();
+	}
+	
+	
+	/**
+	 * doSendRepost 执行转发
+	 *
+	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
+	 */
+	public function doSendRepost1() {
+		$this->checkIsLogin ();
+		$aContent = I ( 'post.content', '', 'op_t' );
+	
+		$aType = I ( 'post.type', '', 'op_t' );
+	
+		$aSourceId = I ( 'post.sourceId', 0, 'intval' );
+	
+		$aWeiboId = I ( 'post.weiboId', 0, 'intval' );
+	
+		$aBeComment = I ( 'post.becomment', 'false', 'op_t' );
+	
+		$this->checkAuth ( null, - 1, L ( '_INFO_AUTHORITY_TRANSMIT_LACK_' ) );
+	
+		$return = check_action_limit ( 'add_weibo', 'weibo', 0, is_login (), true );
+	
+		$contents = explode ( ";", $aContent );
+		$uid = $contents [0];
+		$aSourceId = $contents [1];
+		$aWeiboId = $contents [2];
+		$aContent = $contents [3];
+	
+		$weiboModel = D ( 'Weibo' );
+		$result = $weiboModel->getWeiboDetail ( $aSourceId );
+	
+		$this->assign ( 'sourceWeibo', $result );
+		$weiboContent = '';
+		if ($aSourceId != $aWeiboId) { // $aSourceId：源微博id ; $aWeiboId：当前被转发微博id
+			$weibo1 = $weiboModel->getWeiboDetail ( $aWeiboId );
+			$weiboContent = '//@' . $weibo1 ['user'] ['nickname'] . ' ：' . $weibo1 ['content'];
+			// $weiboContent = '自己写的，作为标志';
+		}
+	
+		$aContent .= $weiboContent;
+	
+		if ($return && ! $return ['state']) {
+			$this->error ( $return ['info'] );
+		}
+	
+		if (empty ( $aContent )) {
+			$this->error ( L ( '_ERROR_CONTENT_CANNOT_EMPTY_' ) );
+		}
+	
+		$weiboModel = D ( 'Weibo' );
+		$feed_data = '';
+		$source = $weiboModel->getWeiboDetail ( $aSourceId );
+		$sourceweibo = $source ['weibo'];
+		$feed_data ['source'] = $sourceweibo;
+		$feed_data ['sourceId'] = $aSourceId;
+		
+		// 发布微博
+		$new_id = send_weibo1 ( $uid, $aContent, $aType, $feed_data );
+	
+		if ($new_id) {
+			D ( 'weibo' )->where ( 'id=' . $aSourceId )->setInc ( 'repost_count' );
+			$aWeiboId != $aSourceId && D ( 'weibo' )->where ( 'id=' . $aWeiboId )->setInc ( 'repost_count' );
+			S ( 'weibo_' . $aWeiboId, null );
+			S ( 'weibo_' . $aSourceId, null );
+		}
+		// 发送消息
+		$user = query_user ( array (
+				'nickname'
+		), is_login () );
+		$toUid = D ( 'weibo' )->where ( array (
+				'id' => $aWeiboId
+		) )->getField ( 'uid' );
+		D ( 'Common/Message' )->sendMessage ( $toUid, L ( '_PROMPT_TRANSMIT_' ), $user ['nickname'] . L ( '_TIP_TRANSMITTED_' ) . L ( '_EXCLAMATION_' ), 'Weibo/Index/weiboDetail', array (
+				'id' => $new_id
+		), is_login (), 1 );
+	
+		// 发布评论
+		// dump($aBeComment);exit;
+		if ($aBeComment == 'true') {
+			send_comment ( $aWeiboId, $aContent );
+		}
+	
+		$result ['html'] = R ( 'WeiboDetail1/weibo_html', array (
+				'weibo_id' => $new_id
+		), 'Widget' );
+		// 返回成功结果
+	
+		$result ['status'] = 1;
+		$result ['info'] = '转发成功！' . cookie ( 'score_tip' );
+		;
+		$this->ajaxReturn ( $result );
+	}
+	
+	
+	
+	/**
 	 * doComment 发布评论
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function doComment() {
@@ -830,7 +837,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * checkIsLogin 判断是否登录
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	private function checkIsLogin() {
@@ -841,7 +848,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * commentlist 评论列表
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function commentlist() {
@@ -861,7 +868,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * doDelComment 删除评论
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function doDelComment() {
@@ -886,7 +893,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * doDelWeibo 删除微博
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function doDelWeibo() {
@@ -913,7 +920,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * setTop 置顶
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	public function setTop() {
@@ -952,7 +959,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * assignSelf 输出当前登录用户信息
-	 * 
+	 *
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com
 	 */
 	private function assignSelf() {
@@ -982,7 +989,7 @@ class IndexController extends BaseController {
 	
 	/**
 	 * weiboDetail 微博详情页
-	 * 
+	 *
 	 * @param
 	 *        	$id
 	 * @author :xjw129xjt(肖骏涛) xjt@ourstu.com

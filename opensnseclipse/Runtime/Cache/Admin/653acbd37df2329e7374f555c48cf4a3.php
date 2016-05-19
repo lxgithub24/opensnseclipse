@@ -175,7 +175,7 @@
                 padding: 5px 10px;
             }
         </style>
-<form id="searchForm" method="get" action="<?php echo ((isset($searchPostUrl) && ($searchPostUrl !== ""))?($searchPostUrl):'/opensnseclipse/index.php?s=/admin/adv/adv.html'); ?>" class="form-dont-clear-url-param">
+<form id="searchForm" method="get" action="<?php echo ((isset($searchPostUrl) && ($searchPostUrl !== ""))?($searchPostUrl):'/opensnseclipse/index.php?s=/admin/role/userlist.html&role_id=1&user_status=1&single_role=0'); ?>" class="form-dont-clear-url-param">
     <div class="search-form  cf " style="margin-bottom: 10px">
         <table class="tb_search">
 
@@ -245,7 +245,7 @@
                         min-width: 200px;
                     }
                 </style>
-                <form id="selectForm" method="get" action="<?php echo ((isset($selectPostUrl) && ($selectPostUrl !== ""))?($selectPostUrl):'/opensnseclipse/index.php?s=/admin/adv/adv.html'); ?>" class="form-dont-clear-url-param">
+                <form id="selectForm" method="get" action="<?php echo ((isset($selectPostUrl) && ($selectPostUrl !== ""))?($selectPostUrl):'/opensnseclipse/index.php?s=/admin/role/userlist.html&role_id=1&user_status=1&single_role=0'); ?>" class="form-dont-clear-url-param">
                     <input type="hidden" name="<?php echo ($search['name']); ?>" value="<?php echo I($search['name']);?>"/>
                     <?php if(is_array($selects)): $i = 0; $__LIST__ = $selects;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$select): $mod = ($i % 2 );++$i;?><div class="oneselect">
                             <div class="title"><?php echo ($select["title"]); ?></div>

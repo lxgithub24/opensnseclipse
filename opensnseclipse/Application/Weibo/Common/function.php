@@ -19,8 +19,8 @@
  */
 function send_weibo($content,$type,$feed_data = '', $from = ''){
 
-//     $uid = is_login();
-    $uid = 1;
+    $uid = is_login();
+//     $uid = 1;
     D('Weibo/Topic')->addTopic($content);
     $weibo_id = D('Weibo')->addWeibo($uid, $content, $type, $feed_data,$from);
     if (!$weibo_id) {
@@ -34,6 +34,15 @@ function send_weibo($content,$type,$feed_data = '', $from = ''){
 
 }
 
+/**
+ * send_weibo  发布微博   模拟
+ * @param $content
+ * @param $type
+ * @param string $feed_data
+ * @param string $from
+ * @return bool
+ * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
+ */
 function send_weibo1($uid,$content,$type,$feed_data = '', $from = ''){
 // 	$contents = explode ( ";", $content );
 // 	$uids = explode ( ",", $contents[0] );
@@ -53,10 +62,9 @@ function send_weibo1($uid,$content,$type,$feed_data = '', $from = ''){
 		clean_query_user_cache(is_login(), array('weibocount'));
 		return $weibo_id;
 // 	}
-	
-
 
 }
+
 
 /**
  * send_comment  发布评论

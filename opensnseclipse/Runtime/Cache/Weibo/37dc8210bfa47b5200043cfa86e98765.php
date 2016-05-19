@@ -393,7 +393,7 @@
                     </li>
                     <?php }} ?>
                 </div>
-                <?php if(is_array($tab_config)): $i = 0; $__LIST__ = $tab_config;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$tab): $mod = ($i % 2 );++$i;?><a id="<?php echo ($tab); ?>" href="<?php echo U('Weibo/Index/index',array('type'=>$tab));?>">
+                <?php if(is_array($tab_config)): $i = 0; $__LIST__ = $tab_config;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$tab): $mod = ($i % 2 );++$i;?><a id="<?php echo ($tab); ?>" href="<?php echo U('Weibo/Index/idpost',array('type'=>$tab));?>">
                         <?php switch($tab): case "concerned": echo L('_MY_FOLLOWING_'); break;?>
                             <?php case "hot": echo L('_HOT_WEIBO_'); break;?>
                             <?php case "all": echo L('_ALL_WEBSITE_WEIBO_'); break;?>
@@ -417,7 +417,7 @@
         </div>
         <div id="weibo_list">
             <?php if($page != 1){ ?>
-            <?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$weibo): $mod = ($i % 2 );++$i; echo W('Weibo/WeiboDetail/detail1',array('weibo_id'=>$weibo)); endforeach; endif; else: echo "" ;endif; ?>
+            <?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$weibo): $mod = ($i % 2 );++$i; echo W('Weibo/WeiboDetail/detail',array('weibo_id'=>$weibo)); endforeach; endif; else: echo "" ;endif; ?>
 <?php if(empty($lastId) == false): ?><script>
         weibo.lastId = '<?php echo ($lastId); ?>';
     </script><?php endif; ?>
