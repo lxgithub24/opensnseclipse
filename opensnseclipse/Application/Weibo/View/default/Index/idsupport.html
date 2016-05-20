@@ -1,0 +1,83 @@
+<!--  整个微博内容部分-->
+<extend name="Base/common" />
+
+<block name="body"> <!--  删除置顶前 置点-->
+<link href="__CSS__/weibo.css" type="text/css" rel="stylesheet" />
+<!--微博内容列表部分-->
+<div class="weibo_middle pull-left" style="width: 660px">
+	<!--  发表微博框-->
+	<include file="_quickweibo" />
+	<!--  筛选部分-->
+	<div>
+		<php>if(!is_login()) $style='margin-top:0'</php>
+		<div id="weibo_filter" class="margin-bottom-10"
+			style="position: relative;{$style}">
+			<div>
+				<php> $show_icon_eye_open=0; if(count($top_list)){
+				$hide_ids=cookie('Weibo_index_top_hide_ids');
+				if(mb_strlen($hide_ids,'utf-8')){ $hide_ids=explode(',',$hide_ids);
+				foreach($top_list as $val){ if(in_array($val,$hide_ids)){
+				$show_icon_eye_open=1; break; } }}} if(count($top_list)){
+				if($show_icon_eye_open){ </php>
+				<li data-weibo-id="{$weibo.id}"
+					title="{:L('_SHOW_ALL_TOP_')}{$MODULE_ALIAS}"
+					data-role="show_all_top_weibo"><i class="icon icon-eye-open"></i>
+				</li>
+				<php>}else{</php>
+				<li data-weibo-id="{$weibo.id}"
+					title="{:L('_SHOW_ALL_TOP_')}{$MODULE_ALIAS}"
+					data-role="show_all_top_weibo" style="display: none;"><i
+					class="icon icon-eye-open"></i></li>
+				<php>}}</php>
+			</div>
+
+			<div class="pull-right" style="line-height: 35px; text-align: right">
+				{:W('Common/Adv/render',array(array('name'=>'filter_right','type'=>3,'width'=>'300px','height'=>'30px','title'=>'过滤右方')))}
+			</div>
+
+		</div>
+	</div>
+
+	<div id="weibo_list">
+		<php> if($page != 1){ </php>
+		<include file="loadweibo" />
+		<php> } </php>
+
+	</div>
+	<div id="load_more" class="text-center text-muted"
+		<if condition="$page neq 1">style="display:none"</if>
+		>
+
+	</div>
+	<div id="index_weibo_page" style="">
+		<div class="text-right">{:getPagination($total_count,30)}</div>
+	</div>
+</div>
+
+</block>
+<block name="script"> <script src="__JS__/weibo.js"></script> <script>
+	var SUPPORT_URL = "{:addons_url('Support://Support/doSupport1')}";
+	weibo.page = '{$page}';
+	weibo.loadCount = 0;
+	weibo.lastId = parseInt('{$list|reset}') + 1;
+	weibo.url = "{$loadMoreUrl}";
+	weibo.type = "{$type}";
+	$(function() {
+		weibo_bind();
+		//当屏幕滚动到底部时
+		if (weibo.page == 1) {
+			$(window).on('scroll', function() {
+				if (weibo.noMoreNextPage) {
+					return;
+				}
+				if (weibo.isLoadingWeibo) {
+					return;
+				}
+				if (weibo.isLoadMoreVisible()) {
+					weibo.loadNextPage();
+				}
+			});
+			$(window).trigger('scroll');
+		}
+	});
+</script> </block>
