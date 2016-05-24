@@ -309,68 +309,14 @@
     <div id="main-container" class="container">
         <div class="row">
              <!--  删除置顶前 置点-->
+ <style>
+        #main-container {
+            width: 960px;
+        }
+    </style>
 <link href="/opensnseclipse/Application/Weibo/Static/css/weibo.css" type="text/css" rel="stylesheet" />
 <!--微博内容列表部分-->
 <div class="weibo_middle pull-left" style="width: 660px">
-	<!--  发表微博框-->
-	<?php if($show_post): ?><div class="weibo_content weibo_post_box">
-
-        <p class="pull-left">
-            <?php echo modC('WEIBO_INFO',L('_TIP_SOMETHING_TO_SAY_'));?>
-        </p>
-        <div class="pull-right show_num_quick"><?php echo L('_TIP_REMAIN_INPUT_'); echo modC('WEIBO_NUM',140,'WEIBO'); echo L('_GE_WORDS_');?></div>
-        <div class="weibo_content_p">
-            <div class="row">
-                <div class="col-xs-12">
-                    <p><textarea class="form-control weibo_content_quick" id="weibo_content" style="height: 6em;"
-                                 placeholder="<?php echo L('_PLACEHOLDER_SOMETHING_TO_WRITE_');?>" onfocus="startCheckNum_quick($(this))"
-                                 onblur="endCheckNum_quick()"></textarea></p>
-                    <a href="javascript:" onclick="insertFace($(this))">
-                        <img class="weibo_type_icon" src="/opensnseclipse/Application/Core/Static/images/bq.png"/>
-                    </a>
-                    <?php if(modC('CAN_IMAGE',1)): ?><a href="javascript:" id="insert_image" onclick="insert_image.insertImage(this)">
-                        <img class="weibo_type_icon" src="/opensnseclipse/Application/Weibo/Static/images/image.png"/>
-                    </a><?php endif; ?>
-                    <?php if(modC('CAN_TOPIC',1)): ?><a href="javascript:" onclick="insert_topic.InsertTopic(this)">
-                        <img class="weibo_type_icon" src="/opensnseclipse/Application/Weibo/Static/images/topic.png"/>
-                    </a><?php endif; ?>
-                    <?php echo hook('weiboType');?>
-                    <p class="pull-right">
-                        <?php echo use_topic();?>
-                        &nbsp;&nbsp;&nbsp;
-                        <input type="submit" value="<?php echo L('_PUBLISH_');?>"  data-role="send_weibo" class="btn btn-primary btn-lg" style="border:none;width: 100px" data-url="<?php echo U('Weibo/Index/doSend');?>"/>
-                    </p>
-                </div>
-            </div>
-            <div id="emot_content" class="emot_content"></div>
-            <div id="hook_show" class="emot_content"></div>
-        </div>
-    </div>
-    <script>
-        var ID_setInterval;
-        function checkNum_quick(obj) {
-            var value = obj.val();
-            var value_length = value.length;
-            var can_in_num = initNum - value_length;
-            if (can_in_num < 0) {
-                value = value.substr(0, initNum);
-                obj.val(value);
-                can_in_num = 0;
-            }
-            var html = "<?php echo L('_TIP_REMAIN_INPUT_');?>" + can_in_num + "<?php echo L('_GE_WORDS_');?>";
-            $('.show_num_quick').html(html);
-        }
-        function startCheckNum_quick(obj) {
-            ID_setInterval = setInterval(function () {
-                checkNum_quick(obj);
-            }, 250);
-        }
-        function endCheckNum_quick() {
-            clearInterval(ID_setInterval);
-        }
-    </script>
-    <script type="text/javascript" charset="utf-8" src="/opensnseclipse/Public/js/ext/webuploader/js/webuploader.js"></script>
-    <link href="/opensnseclipse/Public/js/ext/webuploader/css/webuploader.css" type="text/css" rel="stylesheet"><?php endif; ?>
 
 	<!--  筛选部分-->
 	<div>
@@ -392,29 +338,20 @@
 			</div>
 
 			<div class="pull-right" style="line-height: 35px; text-align: right">
-				<?php echo W('Common/Adv/render',array(array('name'=>'filter_right','type'=>3,'width'=>'300px','height'=>'30px','title'=>'过滤右方')));?>
-			</div>
+				</div>
 
 		</div>
 	</div>
+ <div id="top_list" >
+            <?php if(is_array($top_list)): $i = 0; $__LIST__ = $top_list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$top): $mod = ($i % 2 );++$i; echo W('WeiboDetail2/detail2',array('weibo_id'=>$top,'can_hide'=>0)); endforeach; endif; else: echo "" ;endif; ?>
+        </div>
 
-	<div id="weibo_list">
-		<?php if($page != 1){ ?>
-		<?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$weibo): $mod = ($i % 2 );++$i; echo W('Weibo/WeiboDetail1/detail1',array('weibo_id'=>$weibo)); endforeach; endif; else: echo "" ;endif; ?>
-<?php if(empty($lastId) == false): ?><script>
-        weibo.lastId = '<?php echo ($lastId); ?>';
-    </script><?php endif; ?>
-
-
-		<?php } ?>
-
-	</div>
 	<div id="load_more" class="text-center text-muted"
 		<?php if($page != 1): ?>style="display:none"<?php endif; ?>
 		>
 
 	</div>
-	<div id="index_weibo_page" style="">
+	<div id="index_weibo_page" style=" <?php if($page == 1): ?>display:none<?php endif; ?>">
 		<div class="text-right"><?php echo getPagination($total_count,30);?></div>
 	</div>
 </div>

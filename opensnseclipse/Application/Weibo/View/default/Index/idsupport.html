@@ -2,12 +2,15 @@
 <extend name="Base/common" />
 
 <block name="body"> <!--  删除置顶前 置点-->
+<style>
+        #main-container {
+            width: 960px;
+        }
+    </style>
 <link href="__CSS__/weibo.css" type="text/css" rel="stylesheet" />
 <!--微博内容列表部分-->
 <div class="weibo_middle pull-left" style="width: 660px">
-	<!--  发表微博框-->
-	<include file="_quickweibo" />
-	<!--  筛选部分-->
+
 	<div>
 		<php>if(!is_login()) $style='margin-top:0'</php>
 		<div id="weibo_filter" class="margin-bottom-10"
@@ -31,25 +34,21 @@
 				<php>}}</php>
 			</div>
 
-			<div class="pull-right" style="line-height: 35px; text-align: right">
-				{:W('Common/Adv/render',array(array('name'=>'filter_right','type'=>3,'width'=>'300px','height'=>'30px','title'=>'过滤右方')))}
-			</div>
-
+			
 		</div>
 	</div>
-
-	<div id="weibo_list">
-		<php> if($page != 1){ </php>
-		<include file="loadweibo" />
-		<php> } </php>
-
-	</div>
+ <div id="top_list" >
+            <volist name="top_list" id="top">
+                {:W('WeiboDetail2/detail2',array('weibo_id'=>$top,'can_hide'=>0))}
+            </volist>
+        </div>
+	
 	<div id="load_more" class="text-center text-muted"
 		<if condition="$page neq 1">style="display:none"</if>
 		>
 
 	</div>
-	<div id="index_weibo_page" style="">
+	<div id="index_weibo_page" style=" <if condition='$page eq 1'>display:none</if>">
 		<div class="text-right">{:getPagination($total_count,30)}</div>
 	</div>
 </div>

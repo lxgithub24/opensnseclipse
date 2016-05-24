@@ -19,18 +19,7 @@
     <div id="main-container" class="top-bar ">
         <volist name="showBlocks" id="v">
             <php>if($v=='slider'){</php>
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-xs-12">
-                        {:W('Common/Adv/render',array(array('name'=>'slider','type'=>2,'width'=>'1120px','height'=>'300px','margin'=>'0 0 15px 0','title'=>'首页轮播图','data'=>array('style'=>1))))}
-                    </div>
-
-                </div>
-
-
-            </div>
-
+            
 
             <php>}else{</php>
             {:W($v.'/HomeBlock/render')}

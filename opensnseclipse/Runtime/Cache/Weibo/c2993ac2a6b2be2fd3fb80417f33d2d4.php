@@ -400,9 +400,7 @@
                             <?php case "fav": echo L('_MY_FAV_'); break; endswitch;?>
 
                     </a><?php endforeach; endif; else: echo "" ;endif; ?>
-                <div class="pull-right" style="line-height: 35px;text-align: right">
-                    <?php echo W('Common/Adv/render',array(array('name'=>'filter_right','type'=>3,'width'=>'300px','height'=>'30px','title'=>'过滤右方')));?>
-                 </div>
+                
 
             </div>
         </div>
@@ -410,11 +408,8 @@
             $('#weibo_filter #<?php echo ($filter_tab); ?>').addClass('active');
         </script>
 
-
         <!--筛选部分结束-->
-        <div id="top_list" >
-            <?php if(is_array($top_list)): $i = 0; $__LIST__ = $top_list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$top): $mod = ($i % 2 );++$i; echo W('WeiboDetail/detail',array('weibo_id'=>$top,'can_hide'=>1)); endforeach; endif; else: echo "" ;endif; ?>
-        </div>
+        
         <div id="weibo_list">
             <?php if($page != 1){ ?>
             <?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$weibo): $mod = ($i % 2 );++$i; echo W('Weibo/WeiboDetail/detail',array('weibo_id'=>$weibo)); endforeach; endif; else: echo "" ;endif; ?>
@@ -517,10 +512,7 @@
                 <?php echo hook('Rank');?>
             </div>
             <?php echo hook('weiboSide');?>
-            <!--广告位-->
-            <?php echo W('Common/Adv/render',array(array('name'=>'below_checkrank','type'=>1,'width'=>'280px','height'=>'100px','title'=>'签到下方广告')));?>
-            <!--广告位end-->
-
+            
             <?php if(modC('ACTIVE_USER',1)): echo W('TopUserList/lists',array(null,'score'.modC('ACTIVE_USER_ORDER',1).'
                 desc',L('_ACTIVE_USER_'),'top',modC('ACTIVE_USER_COUNT',6))); endif; ?>
             <?php if(modC('NEWEST_USER',1)): echo W('UserList/lists',array(null,'id desc',L('_LAST_REGISTER_'),'new',modC('NEWEST_USER_COUNT',6))); endif; ?>

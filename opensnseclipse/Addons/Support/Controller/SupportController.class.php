@@ -81,8 +81,8 @@ class SupportController extends AddonsController
     	
     	$support['row'] = array(262);
     	$support['uid'] = array(100);
-    	$supportRow = array(268,269,270,269,270,271);
-    	$supportUid = array(1,1,1,103,104,105);
+    	$supportRow = array(286,287,288,269,270,271);
+    	$supportUid = array(100,100,100,103,104,105);
     	
     	for($i = 0 ; $i < 3 ; $i++ ){
     		$support['row'] = $supportRow[$i];

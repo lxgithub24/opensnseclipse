@@ -306,17 +306,10 @@
 	<!-- 主体 -->
 	<div class="main-wrapper">
     
-    <?php echo W('Common/SubMenu/render',array($sub_menu,$tab,array('icon'=>'quote-left'),''));?>
-
     <div id="main-container" class="container">
         <div class="row">
             
-    <style>
-        #main-container {
-            width: 960px;
-        }
-    </style>
-    <link href="/opensnseclipse/Application/Weibo/Static/css/weibo.css" type="text/css" rel="stylesheet"/>
+    
     <!--微博内容列表部分-->
     <div class="weibo_middle pull-left" style="width: 660px">
         <?php if($show_post): ?><div class="weibo_content weibo_post_box">
@@ -378,154 +371,11 @@
     <script type="text/javascript" charset="utf-8" src="/opensnseclipse/Public/js/ext/webuploader/js/webuploader.js"></script>
     <link href="/opensnseclipse/Public/js/ext/webuploader/css/webuploader.css" type="text/css" rel="stylesheet"><?php endif; ?>
 
-        <!--  筛选部分-->
-        <div>
-            <?php if(!is_login()) $style='margin-top:0' ?>
-            <div id="weibo_filter" class="margin-bottom-10" style="position: relative;<?php echo ($style); ?>">
-                <div class="weibo_icon">
-                    <?php $show_icon_eye_open=0; if(count($top_list)){ $hide_ids=cookie('Weibo_index_top_hide_ids'); if(mb_strlen($hide_ids,'utf-8')){ $hide_ids=explode(',',$hide_ids); foreach($top_list as $val){ if(in_array($val,$hide_ids)){ $show_icon_eye_open=1; break; } }}} if(count($top_list)){ if($show_icon_eye_open){ ?>
-                    <li data-weibo-id="<?php echo ($weibo["id"]); ?>" title="<?php echo L('_SHOW_ALL_TOP_'); echo ($MODULE_ALIAS); ?>" data-role="show_all_top_weibo">
-                        <i class="icon icon-eye-open"></i>
-                    </li>
-                    <?php }else{ ?>
-                    <li data-weibo-id="<?php echo ($weibo["id"]); ?>" title="<?php echo L('_SHOW_ALL_TOP_'); echo ($MODULE_ALIAS); ?>" data-role="show_all_top_weibo" style="display: none;">
-                        <i class="icon icon-eye-open"></i>
-                    </li>
-                    <?php }} ?>
-                </div>
-                <?php if(is_array($tab_config)): $i = 0; $__LIST__ = $tab_config;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$tab): $mod = ($i % 2 );++$i;?><a id="<?php echo ($tab); ?>" href="<?php echo U('Weibo/Index/idpost',array('type'=>$tab));?>">
-                        <?php switch($tab): case "concerned": echo L('_MY_FOLLOWING_'); break;?>
-                            <?php case "hot": echo L('_HOT_WEIBO_'); break;?>
-                            <?php case "all": echo L('_ALL_WEBSITE_WEIBO_'); break;?>
-                            <?php case "fav": echo L('_MY_FAV_'); break; endswitch;?>
-
-                    </a><?php endforeach; endif; else: echo "" ;endif; ?>
-                <div class="pull-right" style="line-height: 35px;text-align: right">
-                    <?php echo W('Common/Adv/render',array(array('name'=>'filter_right','type'=>3,'width'=>'300px','height'=>'30px','title'=>'过滤右方')));?>
-                 </div>
-
-            </div>
-        </div>
-        <script>
-            $('#weibo_filter #<?php echo ($filter_tab); ?>').addClass('active');
-        </script>
-
-
-        <!--筛选部分结束-->
-        <div id="top_list" >
-            <?php if(is_array($top_list)): $i = 0; $__LIST__ = $top_list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$top): $mod = ($i % 2 );++$i; echo W('WeiboDetail/detail',array('weibo_id'=>$top,'can_hide'=>1)); endforeach; endif; else: echo "" ;endif; ?>
-        </div>
-        <div id="weibo_list">
-            <?php if($page != 1){ ?>
-            <?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$weibo): $mod = ($i % 2 );++$i; echo W('Weibo/WeiboDetail/detail',array('weibo_id'=>$weibo)); endforeach; endif; else: echo "" ;endif; ?>
-<?php if(empty($lastId) == false): ?><script>
-        weibo.lastId = '<?php echo ($lastId); ?>';
-    </script><?php endif; ?>
-
-
-            <?php } ?>
-
-        </div>
-        <div id="load_more" class="text-center text-muted"
-        <?php if($page != 1): ?>style="display:none"<?php endif; ?>
-        >
-        <p id="load_more_text"><img style="margin-top:80px" src="/opensnseclipse/Application/Weibo/Static/images/loading-new.gif"/></p>
-    </div>
-    <div id="index_weibo_page" style=" <?php if($page == 1): ?>display:none<?php endif; ?>">
-        <div class="text-right">
-            <?php echo getPagination($total_count,30);?>
-        </div>
-    </div>
+        
+       
     </div>
 
     <!--微博内容列表部分结束-->
-    <!--首页右侧部分-->
-    <div class="weibo_right" style="width: 280px">
-        <!--登录后显示个人区域-->
-        <?php if(is_login()): ?><div class="user-card" style="height: auto;">
-                <div>
-                    <div class="top_self">
-                        <?php if($self['cover_id']): ?><img class="cover uc_top_img_bg_weibo" src="<?php echo ($self['cover_path']); ?>">
-                            <?php else: ?>
-                            <img class="cover uc_top_img_bg_weibo" src="/opensnseclipse/Application/Core/Static/images/bg.jpg"><?php endif; ?>
-                        <?php if(is_login() && $self['uid'] == is_login()): ?><div class="change_cover"><a data-type="ajax" data-url="<?php echo U('Ucenter/Public/changeCover');?>"
-                                                         data-toggle="modal" data-title="<?php echo L('_UPLOAD_COVER_');?>" style="color: white;"><img
-                                    class="img-responsive" src="/opensnseclipse/Application/Core/Static/images/fractional.png" style="width: 25px;"></a>
-                            </div><?php endif; ?>
-                    </div>
-                </div>
-                <div class="user_info" style="padding: 0px;">
-                    <div class="avatar-bg">
-                        <div class="headpic ">
-                            <a href="<?php echo ($self["space_url"]); ?>" ucard="<?php echo ($self["uid"]); ?>">
-                                <img src="<?php echo ($self["avatar128"]); ?>" class="avatar-img" style="width:80px;"/>
-                            </a>
-                        </div>
-                        <div class="clearfix " style="padding: 0;margin-bottom:8px">
-                            <div class="clearfix">
-                                <div class="col-xs-12" style="text-align: center">
-                        <span class="nickname">
-                            <?php echo ($self["title"]); ?>
-                        <a ucard="<?php echo ($self["uid"]); ?>" href="<?php echo ($self["space_url"]); ?>" class="user_name"><?php echo (htmlspecialchars($self["nickname"])); ?></a>
-
-                            </span>
-                                    <br/><?php echo W('Common/UserRank/render',array($self['uid']));?>
-                                </div>
-                            </div>
-                            <?php $title=D('Ucenter/Title')->getCurrentTitleInfo(is_login()); ?>
-                            <script>
-                                $(function () {
-                                    $('#upgrade').tooltip({
-                                                html: true,
-                                                title: '<?php echo L("_CURRENT_LEVEL_");?>：<?php echo ($self["title"]); ?> <br/><?php echo L("_NEXT_LEVEL_");?>：<?php echo ($title["next"]); ?><br/><?php echo L("_NOW_");?>：<?php echo ($self["score"]); ?><br/><?php echo L("_NEED_");?>：<?php echo ($title["upgrade_require"]); ?><br/><?php echo L("_LAST_");?>： <?php echo ($title["left"]); ?><br/><?php echo L("_PROGRESS_");?>：<?php echo ($title["percent"]); ?>% <br/> '
-                                            }
-                                    );
-                                })
-                            </script>
-
-                        </div>
-
-                        <div id="upgrade" data-toggle="tooltip" data-placement="bottom" title=""
-                             style="padding-bottom: 10px;padding-top: 10px">
-                            <div style="border-top:1px solid #eee;"></div>
-                            <div style="border-top: 1px solid rgb(3, 199, 3);margin-top: -1px;width: <?php echo ($title["percent"]); ?>%;z-index: 9999;">
-
-                            </div>
-                        </div>
-                        <div class="clearfix user-data">
-                            <div class="col-xs-4 text-center">
-                                <a href="<?php echo U('Ucenter/index/applist',array('uid'=>$self['uid'],'type'=>'weibo'));?>"
-                                   title="<?php echo ($MODULE_ALIAS); ?>数"><?php echo ($self["weibocount"]); ?></a><br><?php echo ($MODULE_ALIAS); ?>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="<?php echo U('Ucenter/index/fans',array('uid'=>$self['uid']));?>" title="<?php echo L('_FANS_COUNT_');?>"><?php echo ($self["fans"]); ?></a><br><?php echo L('_FANS_');?>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="<?php echo U('Ucenter/index/following',array('uid'=>$self['uid']));?>" title="<?php echo L('');?>"><?php echo ($self["following"]); ?></a><br><?php echo L('_FOLLOW_');?>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <?php echo W('Common/Adv/render',array(array('name'=>'below_self_info','type'=>1,'width'=>'280px','height'=>'100px','margin'=>'0 0 10px 0','title'=>'个人资料下方'))); endif; ?>
-        <!--登录后显示个人区域部分结束-->
-
-        <div>
-            <div class="checkin">
-                <?php echo hook('checkIn');?>
-                <?php echo hook('Rank');?>
-            </div>
-            <?php echo hook('weiboSide');?>
-            <!--广告位-->
-            <?php echo W('Common/Adv/render',array(array('name'=>'below_checkrank','type'=>1,'width'=>'280px','height'=>'100px','title'=>'签到下方广告')));?>
-            <!--广告位end-->
-
-            <?php if(modC('ACTIVE_USER',1)): echo W('TopUserList/lists',array(null,'score'.modC('ACTIVE_USER_ORDER',1).'
-                desc',L('_ACTIVE_USER_'),'top',modC('ACTIVE_USER_COUNT',6))); endif; ?>
-            <?php if(modC('NEWEST_USER',1)): echo W('UserList/lists',array(null,'id desc',L('_LAST_REGISTER_'),'new',modC('NEWEST_USER_COUNT',6))); endif; ?>
-            <?php echo hook('Advs',array('pos'=>'weibo_right_below_all','type'=>1,'width'=>'280px','height'=>'100px','title'=>'微博右侧底部广告'));?>
-        </div>
     </div>
     <!--首页右侧部分结束-->
 
@@ -644,12 +494,7 @@
             }
         });
     </script>
-    <link rel="stylesheet" href="/opensnseclipse/Application/Weibo/Static/css/photoswipe.css">
-    <link rel="stylesheet" href="/opensnseclipse/Application/Weibo/Static/css/default-skin/default-skin.css">
-    <script src="/opensnseclipse/Application/Weibo/Static/js/photoswipe.min.js"></script>
-    <script src="/opensnseclipse/Application/Weibo/Static/js/photoswipe-ui-default.min.js"></script>
-
-
+  
 
 
 <!-- 页面footer钩子，一般用于加载插件JS文件和JS代码 -->

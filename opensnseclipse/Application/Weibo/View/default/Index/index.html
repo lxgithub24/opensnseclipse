@@ -61,9 +61,7 @@
 
                     </a>
                 </volist>
-                <div class="pull-right" style="line-height: 35px;text-align: right">
-                    {:W('Common/Adv/render',array(array('name'=>'filter_right','type'=>3,'width'=>'300px','height'=>'30px','title'=>'过滤右方')))}
-                 </div>
+                
 
             </div>
         </div>
@@ -71,13 +69,8 @@
             $('#weibo_filter #{$filter_tab}').addClass('active');
         </script>
 
-
         <!--筛选部分结束-->
-        <div id="top_list" >
-            <volist name="top_list" id="top">
-                {:W('WeiboDetail/detail',array('weibo_id'=>$top,'can_hide'=>1))}
-            </volist>
-        </div>
+        
         <div id="weibo_list">
             <php>
                 if($page != 1){
@@ -187,10 +180,7 @@
                 {:hook('Rank')}
             </div>
             {:hook('weiboSide')}
-            <!--广告位-->
-            {:W('Common/Adv/render',array(array('name'=>'below_checkrank','type'=>1,'width'=>'280px','height'=>'100px','title'=>'签到下方广告')))}
-            <!--广告位end-->
-
+            
             <if condition="modC('ACTIVE_USER',1)">
                 {:W('TopUserList/lists',array(null,'score'.modC('ACTIVE_USER_ORDER',1).'
                 desc',L('_ACTIVE_USER_'),'top',modC('ACTIVE_USER_COUNT',6)))}

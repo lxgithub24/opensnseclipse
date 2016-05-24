@@ -313,18 +313,7 @@
 
     <div id="main-container" class="top-bar ">
         <?php if(is_array($showBlocks)): $i = 0; $__LIST__ = $showBlocks;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$v): $mod = ($i % 2 );++$i; if($v=='slider'){ ?>
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-xs-12">
-                        <?php echo W('Common/Adv/render',array(array('name'=>'slider','type'=>2,'width'=>'1120px','height'=>'300px','margin'=>'0 0 15px 0','title'=>'首页轮播图','data'=>array('style'=>1))));?>
-                    </div>
-
-                </div>
-
-
-            </div>
-
+            
 
             <?php }else{ ?>
             <?php echo W($v.'/HomeBlock/render');?>
